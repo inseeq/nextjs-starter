@@ -1,0 +1,32 @@
+{
+  "name": "nextjs-starter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.22"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "setup": "node cli.ts setup",
+    "query": "node cli.ts query",
+    "webhook": "node cli.ts webhook"
+  },
+  "dependencies": {
+    "next": "16.4.5",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "standardwebhooks": "1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.5",
+    "typescript": "6.0.3"
+  }
+}

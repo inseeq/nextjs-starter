@@ -12,8 +12,10 @@
     "start": "next start",
     "lint": "eslint .",
     "setup": "node cli.ts setup",
+    "password": "node cli.ts password",
     "query": "node cli.ts query",
-    "webhook": "node cli.ts webhook"
+    "webhook": "node cli.ts webhook",
+    "vercel-env": "node cli.ts vercel-env"
   },
   "dependencies": {
     "next": "16.4.5",

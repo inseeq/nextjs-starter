@@ -24,6 +24,7 @@ You need Node 22.22 or newer. In Claude, with the inseeq connector, ask for a da
 | `lib/session.ts`, `proxy.ts` | The signed cookie and the login gate |
 | `app/webhooks/inseeq/route.ts` | The webhook receiver. Add your work to `handleEvent` |
 | `queries/` | One `.sql` file per metric, with one SELECT each |
+| `examples/daily-digest` | A daily Slack post from one query, run by GitHub Actions. No server. |
 | `cli.ts` | The commands below |
 
 ```ts

@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createInterface } from 'node:readline/promises';
@@ -35,21 +36,67 @@ async function readHidden(prompt: string): Promise<string> {
   return answer.trim();
 }
 
-async function setup(): Promise<void> {
-  if (!process.stdin.isTTY || !process.stdout.isTTY) fail('Setup needs a real terminal. Open your own in this folder and run: npm run setup');
+/** The system clipboard, through the platform's own tool. Each entry is tried in turn. */
+const CLIPBOARD = {
+  read: { darwin: [['pbpaste']], win32: [['powershell', '-NoProfile', '-Command', 'Get-Clipboard']], linux: [['wl-paste', '-n'], ['xclip', '-selection', 'clipboard', '-o'], ['xsel', '-b', '-o']] },
+  write: { darwin: [['pbcopy']], win32: [['clip']], linux: [['wl-copy'], ['xclip', '-selection', 'clipboard'], ['xsel', '-b', '-i']] },
+} as const;
 
-  const apiKey = await readHidden('Paste your inseeq data key (it stays hidden): ');
-  if (!apiKey) fail('No key entered, so nothing was changed.');
+function clipboard(direction: 'read' | 'write', input?: string): string | null {
+  const tools = CLIPBOARD[direction][process.platform as 'darwin' | 'win32' | 'linux'] ?? [];
+  for (const [command, ...args] of tools) {
+    const run = spawnSync(command, args, { input, encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+    if (run.status === 0) return run.stdout;
+  }
+  return null;
+}
+
+const KEY_PREFIX = 'inseeq_dk_';
+
+async function setup(flag = ''): Promise<void> {
+  let apiKey: string;
+  if (flag === '--from-clipboard') {
+    const copied = clipboard('read')?.trim() ?? '';
+    if (!copied.startsWith(KEY_PREFIX) || /\s/.test(copied)) fail('The clipboard does not hold an inseeq data key. Click Copy on the key page, then run this again. Nothing was changed.');
+    apiKey = copied;
+  } else if (flag) {
+    fail('Usage: npm run setup, or npm run setup -- --from-clipboard');
+  } else {
+    if (!process.stdin.isTTY || !process.stdout.isTTY) fail('Setup needs a real terminal, or the key on the clipboard: npm run setup -- --from-clipboard');
+    apiKey = await readHidden('Paste your inseeq data key (it stays hidden): ');
+    if (!apiKey) fail('No key entered, so nothing was changed.');
+  }
 
   const apiUrl = process.env.INSEEQ_API_URL || DEFAULT_API_URL;
-  const savedPassword = process.env.DASHBOARD_PASSWORD;
-  const password = savedPassword || randomBytes(24).toString('base64url');
-  saveEnv({ INSEEQ_API_KEY: apiKey, INSEEQ_API_URL: apiUrl, DASHBOARD_PASSWORD: password });
-  console.log(savedPassword ? 'Wrote .env and kept its DASHBOARD_PASSWORD.' : `Wrote .env. Dashboard password, shown once: ${password}`);
-
+  const password = process.env.DASHBOARD_PASSWORD || randomBytes(24).toString('base64url');
   const client = createClient({ apiKey, apiUrl });
   const [status, tables] = await Promise.all([client.status(), client.listTables()]);
-  console.log(`Connected. ${tables.length} tables. Last refresh: ${status.refreshed_at ?? 'not recorded yet'}.`);
+  saveEnv({ INSEEQ_API_KEY: apiKey, INSEEQ_API_URL: apiUrl, DASHBOARD_PASSWORD: password });
+  if (flag) clipboard('write', '');
+
+  console.log(`Connected. ${tables.length} tables. Last refresh: ${status.refreshed_at ?? 'not yet'}.`);
+  console.log('Saved the key and a dashboard password in .env. Neither was printed.');
+  console.log('Next: npm run dev, open http://localhost:3000, and run npm run password to copy the password.');
+}
+
+async function password(): Promise<void> {
+  const saved = process.env.DASHBOARD_PASSWORD;
+  if (!saved) fail('No DASHBOARD_PASSWORD in .env yet. Run npm run setup first.');
+  if (clipboard('write', saved) === null) fail('Could not reach the clipboard. The password is DASHBOARD_PASSWORD in .env.');
+  console.log('Copied the dashboard password. Paste it on the login page.');
+}
+
+/** Copies the values a deployed dashboard needs from .env to the linked Vercel project, without printing them. */
+async function vercelEnv(): Promise<void> {
+  const names = ['INSEEQ_API_KEY', 'DASHBOARD_PASSWORD', 'INSEEQ_WEBHOOK_SECRET'].filter((name) => process.env[name]);
+  if (!names.includes('INSEEQ_API_KEY')) fail('No INSEEQ_API_KEY in .env yet. Run npm run setup first.');
+  if (!existsSync('.vercel/project.json')) fail('This folder is not linked to a Vercel project yet. Run: npx vercel link');
+  for (const name of names) {
+    const run = spawnSync('npx', ['vercel', 'env', 'add', name, 'production', '--sensitive', '--force'], { input: process.env[name], stdio: ['pipe', 'ignore', 'inherit'] });
+    if (run.status !== 0) fail(`Vercel refused ${name}. Check npx vercel whoami, then run this again.`);
+    console.log(`Set ${name} on Vercel.`);
+  }
+  console.log('Next: npx vercel deploy --prod');
 }
 
 async function query(sqlOrName?: string): Promise<void> {
@@ -86,7 +133,7 @@ async function webhook(subcommand = '', argument = ''): Promise<void> {
   await (subcommand === 'register' ? registerWebhook(argument) : testWebhook(argument));
 }
 
-const commands: Record<string, (...args: string[]) => Promise<void>> = { setup, query, webhook };
+const commands: Record<string, (...args: string[]) => Promise<void>> = { setup, password, query, webhook, 'vercel-env': vercelEnv };
 const [command = '', ...args] = process.argv.slice(2);
 if (!Object.hasOwn(commands, command)) fail(`Commands: ${Object.keys(commands).join(', ')}`);
 if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);

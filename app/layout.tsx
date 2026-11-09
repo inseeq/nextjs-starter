@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import './globals.css';
 
-export const metadata: Metadata = { title: 'Data dashboard' };
+export const metadata: Metadata = { title: process.env.DASHBOARD_TITLE || 'Dashboards' };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (

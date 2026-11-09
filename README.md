@@ -34,7 +34,7 @@ Do these steps in order. Say in one line what you are doing at each step.
 2. **Install:** `npm install`. Warnings are normal. Stop only on an error.
 3. **Get a data key.** Call the inseeq connector's `create_data_key` with label `Dashboard`. Give the user the link exactly as it comes back, and say: "Open this, click Show my key, then Copy, and tell me when you've copied it." Never open the link, and never ask for the key in chat. If no inseeq tools are loaded, ask the user to add the inseeq connector in Claude, then restart Claude Code.
 4. **When the user says they copied it:** `npm run setup -- --from-clipboard`. It saves the key and a dashboard password in `.env`, checks the connection, clears the clipboard and prints neither. If it says the clipboard holds no key, ask the user to click Copy again.
-5. **Start it:** `npm run dev` in the background. Wait for it to answer, then run `npm run password` and tell the user: "Open http://localhost:3000 and paste the password. It's on your clipboard."
+5. **Start it:** `npm run dev` in the background. If something else already listens on port 3000 (`lsof -iTCP:3000 -sTCP:LISTEN`), use `npm run dev -- -p 3001` and that address instead. Wait for it to answer, then run `npm run password` and tell the user: "Open http://localhost:3000 and paste the password. It's on your clipboard."
 6. **Tell the user what they are looking at** in two or three sentences, then explain saved queries (below) in plain words, and offer to build their first page.
 
 If a page shows "This view needs data your organization does not have yet", that source is not connected in inseeq. The other pages still work.

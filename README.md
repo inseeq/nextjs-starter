@@ -32,7 +32,7 @@ Do these steps in order. Say in one line what you are doing at each step.
    - If not: `git clone --depth 1 https://github.com/inseeq/nextjs-starter <name> && cd <name> && rm -rf .git && git init -q`. Tell the user it lives only on their computer for now.
    - Never fork: a fork of a public repo stays public.
 2. **Install:** `npm install`. Warnings are normal. Stop only on an error.
-3. **Get a data key.** Call the inseeq connector's `create_data_key` with label `Dashboard`. Give the user the link exactly as it comes back, and say: "Open this, click Show my key, then Copy, and tell me when you've copied it." Never open the link, and never ask for the key in chat. If no inseeq tools are loaded, ask the user to add the inseeq connector in Claude, then restart Claude Code.
+3. **Get an API key.** Call the inseeq connector's `create_api_key` with label `Dashboard`. Give the user the link exactly as it comes back, and say: "Open this, click Show my key, then Copy, and tell me when you've copied it." Never open the link, and never ask for the key in chat. If no inseeq tools are loaded, ask the user to add the inseeq connector in Claude, then restart Claude Code.
 4. **When the user says they copied it:** `npm run setup -- --from-clipboard`. It saves the key and a dashboard password in `.env`, checks the connection, clears the clipboard and prints neither. If it says the clipboard holds no key, ask the user to click Copy again.
 5. **Start it:** `npm run dev` in the background. If something else already listens on port 3000 (`lsof -iTCP:3000 -sTCP:LISTEN`), use `npm run dev -- -p 3001` and that address instead. Wait for it to answer, then run `npm run password` and tell the user: "Open http://localhost:3000 and paste the password. It's on your clipboard."
 6. **Tell the user what they are looking at** in two or three sentences, then explain saved queries (below) in plain words, and offer to build their first page.
@@ -66,7 +66,7 @@ where not is_detail and date_native between @start_date and @end_date
 group by day, platform
 ```
 
-- **Tables are named without a dataset.** The data key already decides whose data you read.
+- **Tables are named without a dataset.** The API key already decides whose data you read.
 - **`@start_date` is a parameter.** The value travels separately from the SQL, so it is never pasted into it.
 - **A tab runs it by name:**
 
@@ -100,7 +100,7 @@ Anyone with the address and the password can see the dashboard. To change the pa
 | Command | What it does |
 |---|---|
 | `npm run dev` | The dashboard on http://localhost:3000 |
-| `npm run setup -- --from-clipboard` | Saves a copied data key to `.env`. `npm run setup` alone asks for it instead |
+| `npm run setup -- --from-clipboard` | Saves a copied API key to `.env`. `npm run setup` alone asks for it instead |
 | `npm run password` | Copies the dashboard password |
 | `npm run query <name or SQL>` | Runs a saved query, or SQL, and prints the rows |
 | `npm run vercel-env` | Sends `.env`'s values to the linked Vercel project |

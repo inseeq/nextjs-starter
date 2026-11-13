@@ -57,13 +57,13 @@ async function setup(flag = ''): Promise<void> {
   let apiKey: string;
   if (flag === '--from-clipboard') {
     const copied = clipboard('read')?.trim() ?? '';
-    if (!copied.startsWith(KEY_PREFIX) || /\s/.test(copied)) fail('The clipboard does not hold an inseeq data key. Click Copy on the key page, then run this again. Nothing was changed.');
+    if (!copied.startsWith(KEY_PREFIX) || /\s/.test(copied)) fail('The clipboard does not hold an inseeq API key. Click Copy on the key page, then run this again. Nothing was changed.');
     apiKey = copied;
   } else if (flag) {
     fail('Usage: npm run setup, or npm run setup -- --from-clipboard');
   } else {
     if (!process.stdin.isTTY || !process.stdout.isTTY) fail('Setup needs a real terminal, or the key on the clipboard: npm run setup -- --from-clipboard');
-    apiKey = await readHidden('Paste your inseeq data key (it stays hidden): ');
+    apiKey = await readHidden('Paste your inseeq API key (it stays hidden): ');
     if (!apiKey) fail('No key entered, so nothing was changed.');
   }
 

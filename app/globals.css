@@ -814,29 +814,18 @@ tr[aria-current='true'] {
   white-space: nowrap;
 }
 
-.lane-track .dot,
-.lane-track .week {
-  border: 2px solid var(--surface);
-  position: absolute;
-  top: 50%;
+.lane.head .mark.end {
+  transform: translateX(-100%);
 }
 
 .lane-track .dot {
+  border: 2px solid var(--surface);
   border-radius: 50%;
   height: 16px;
   margin: -8px 0 0 -8px;
+  position: absolute;
+  top: 50%;
   width: 16px;
-}
-
-.lane-track .week {
-  border-radius: 2px;
-  height: 20px;
-  margin: -10px 0 0 -4px;
-  width: 8px;
-}
-
-.lane-track .uncounted {
-  opacity: 0.3;
 }
 
 .credit-line {

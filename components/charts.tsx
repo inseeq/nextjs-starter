@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { shortDay } from '../lib/format.ts';
 
 /** Series colors in a fixed order, checked for color blindness. Give each entity one slot and keep it. */
-export const COLORS = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)'] as const;
+export const COLORS = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)', 'var(--series-5)', 'var(--series-6)', 'var(--series-7)'] as const;
 export const MUTED = 'var(--series-muted)';
 
 export interface Series {

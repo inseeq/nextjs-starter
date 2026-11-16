@@ -5,6 +5,9 @@ import type { Period } from '../lib/data.ts';
 
 export interface ViewProps {
   period: Period;
+  /** The tab's own URL and its query, for views that keep a selection in the URL. */
+  path: string;
+  query: Record<string, string | undefined>;
 }
 
 export interface Tab {

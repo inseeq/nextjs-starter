@@ -1,4 +1,4 @@
-/* Colors are tokens: change them here, never in a component. The four series colors pass a color-blindness check in this order, in both modes. */
+/* Colors are tokens: change them here, never in a component. The seven series colors pass a color-blindness check in this order, in both modes. */
 :root {
   color-scheme: light;
   --bg: #f4f4f5;
@@ -19,6 +19,9 @@
   --series-2: #eb6834;
   --series-3: #1baf7a;
   --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #6250d6;
   --series-muted: #d4d4d8;
   --radius-card: 16px;
   --radius: 10px;
@@ -48,6 +51,9 @@
     --series-2: #d95926;
     --series-3: #199e70;
     --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #0ca30c;
+    --series-7: #9085e9;
     --series-muted: #52525b;
     --shadow: none;
   }
@@ -687,6 +693,157 @@ tbody tr:hover {
 
 
 
+
+/* Attribution: paired bars per channel, and a deal's touches on a timeline. */
+.pairs {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pairs a {
+  align-items: center;
+  border-radius: var(--radius);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(8rem, 14rem) minmax(0, 1fr);
+  margin: 0 -0.6rem;
+  padding: 0.5rem 0.6rem;
+  text-decoration: none;
+}
+
+.pairs a:hover,
+.pairs a[aria-current='true'] {
+  background: var(--surface-2);
+}
+
+.pairs a[aria-current='true'] .ranked-label {
+  font-weight: 600;
+}
+
+.pair {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.pair .ranked-bar {
+  height: 12px;
+}
+
+.row-link {
+  font-weight: 550;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+}
+
+tr[aria-current='true'] {
+  background: var(--accent-soft);
+}
+
+.card-tools {
+  align-items: center;
+  color: var(--text-2);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.card-tools .segmented {
+  margin: 0;
+}
+
+.journey {
+  margin: 0 0 1rem;
+  overflow-x: auto;
+}
+
+.journey-inner {
+  min-width: 560px;
+}
+
+.lane {
+  align-items: center;
+  border-top: 1px solid var(--grid);
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  min-height: 44px;
+}
+
+.lane.head {
+  border-top: 0;
+  min-height: 30px;
+}
+
+.lane-who {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.lane-who small {
+  color: var(--text-3);
+}
+
+.lane-track {
+  align-self: stretch;
+  margin: 0 3.5rem 0 0.75rem;
+  position: relative;
+}
+
+.lane-track .mark {
+  border-left: 1px dashed var(--text-3);
+  bottom: 0;
+  position: absolute;
+  top: 0;
+}
+
+.lane.head .mark {
+  border: 0;
+  color: var(--text-2);
+  font-size: 0.75rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.lane-track .dot,
+.lane-track .week {
+  border: 2px solid var(--surface);
+  position: absolute;
+  top: 50%;
+}
+
+.lane-track .dot {
+  border-radius: 50%;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  width: 16px;
+}
+
+.lane-track .week {
+  border-radius: 2px;
+  height: 20px;
+  margin: -10px 0 0 -4px;
+  width: 8px;
+}
+
+.lane-track .uncounted {
+  opacity: 0.3;
+}
+
+.credit-line {
+  color: var(--text-2);
+  font-size: 0.9rem;
+  margin: 0;
+}
 
 /* States. */
 .empty {

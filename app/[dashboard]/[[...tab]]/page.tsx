@@ -21,10 +21,12 @@ export default async function DashboardPage({
   const tab = rest.length <= 1 ? dashboard?.tabs.find((t) => t.slug === (rest[0] ?? dashboard.tabs[0]?.slug)) : undefined;
   if (!dashboard || !tab) notFound();
 
-  const range = parseRange((await searchParams).range);
+  const search = await searchParams;
+  const range = parseRange(search.range);
+  const query = Object.fromEntries(Object.entries(search).map(([key, value]) => [key, typeof value === 'string' ? value : undefined]));
   let body: ReactNode;
   try {
-    body = await tab.View({ period: await getPeriod(range) });
+    body = await tab.View({ period: await getPeriod(range), path: `/${dashboard.slug}/${tab.slug}`, query });
   } catch (error) {
     if (!(error instanceof InseeqError)) throw error;
     body = <ErrorState error={error} />;

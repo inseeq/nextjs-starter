@@ -13,6 +13,7 @@ const ICONS = {
   chart: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
   globe: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20',
   funnel: 'M3 4h18l-7 8v6l-4 2v-8L3 4Z',
+  path: 'M5 6a2 2 0 1 0 0-.01M19 12a2 2 0 1 0 0-.01M5 18a2 2 0 1 0 0-.01M7 6h6a4 4 0 0 1 4 4v0M7 18h6a4 4 0 0 0 4-4v0',
   grid: 'M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z',
 } as const;
 
